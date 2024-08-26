@@ -17,13 +17,6 @@ class _ForgotPageState extends State<ForgotPage> {
           children: [
             AppBar(
               backgroundColor: Colors.greenAccent,
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () {
-                  Navigator.of(context).pushReplacementNamed('/login');
-                },
-              ),
-              elevation: 0,
             ),
             Center(
               child: Image.asset(
@@ -35,9 +28,38 @@ class _ForgotPageState extends State<ForgotPage> {
           ],
         ),
       ),
-      body: Center(
-        child: Text("Halaman Error 404, Silahkan Kembali"),
-      ),
+      body: Container(
+  child: Center( 
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Padding(padding: const EdgeInsets.only(left: 30, right: 30),
+        child:Text(
+          "Oops! Halaman dalam pengembangan silahkan kembali",
+          style: TextStyle(fontSize: 19,
+                fontFamily: 'Lato',
+                fontWeight: FontWeight.w400,),
+        ),),
+        SizedBox(height: 60),  
+        ElevatedButton(
+          onPressed: () {
+            Navigator.of(context).pushReplacementNamed('/dashboard');
+          },
+          style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.greenAccent, 
+                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15), 
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0), 
+                ),
+              ),
+          child: Text('Kembali',
+          style: TextStyle(color: Colors.white)),
+        ),
+      ],
+    ),
+  ),
+),
+
     );
   }
 }
