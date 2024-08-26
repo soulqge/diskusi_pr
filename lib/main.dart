@@ -1,6 +1,8 @@
 import 'package:diskusi_pr/pages/dashboard.dart';
 import 'package:diskusi_pr/pages/forgot.dart';
 import 'package:diskusi_pr/pages/diskusipr.dart';
+import 'package:diskusi_pr/pages/halaman.dart';
+import 'package:diskusi_pr/pages/home.dart';
 import 'package:diskusi_pr/pages/login.dart';
 import 'package:diskusi_pr/pages/signup.dart';
 import 'package:flutter/material.dart';
@@ -13,11 +15,13 @@ void main() async {
   runApp(MaterialApp(
     initialRoute: '/dashboard',
     routes: {
-      '/home': (context) => HomePage(),
+      '/homepage': (context) => HomePage(),
       '/dashboard':(context) => Dashboard(),
       '/login':(context) => Login(),
       '/signup':(context) => Singup(),
       '/forgot':(context) => ForgotPage(),
+      '/perbaikan':(context) => Perbaikan(),
+      '/home':(context) => Home(),
       
 
 

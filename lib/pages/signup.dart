@@ -35,9 +35,23 @@ class _SingupState extends State<Singup> {
           ],
         ),
       ),
-      body: Center(
-        child: Text('Halaman Sign Up'),
-      ),
+      body: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: 15,),
+        Padding(padding: const EdgeInsets.only(left: 16),
+        child: Text("Buat Akun Mejakita",
+        style: TextStyle(fontSize: 18,
+        fontFamily: 'Lato',
+        fontWeight: FontWeight.w400,),),
+        ),
+        SizedBox(height: 6,),
+        Padding(padding: const EdgeInsets.only(left: 16),
+        child: Text("Daftar Menggunakan Email Anda",
+        style: TextStyle(fontSize: 12),),
+        )
+      ],
+      )
     );
   }
 }

@@ -40,9 +40,9 @@ class _DashboardState extends State<Dashboard> {
                     width: double.infinity,
                     fit: BoxFit.fill,
                   ),
-                  SizedBox(height: 160), // Ruang untuk Card utama dan jarak ke bawah
+                  SizedBox(height: 160),
                   SizedBox(
-                    height: 200, // Tinggi card yang bisa di-swipe
+                    height: 200,
                     child: PageView(
                       controller: _pageController,
                       scrollDirection: Axis.horizontal,
@@ -98,40 +98,40 @@ class _DashboardState extends State<Dashboard> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 20), // Jarak antara PageView dan tombol
+                  SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          // Navigasi ke halaman Login
                           Navigator.of(context).pushReplacementNamed('/login');
                         },
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.white,
-                          backgroundColor: Colors.purple, // Warna teks putih dengan latar biru
+                          backgroundColor: Colors.purple,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30), // Membuat sisi lebih membulat
+                            borderRadius: BorderRadius.circular(30),
+                            side: BorderSide(color: Colors.purple, width: 2),
                           ),
-                          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15), // Padding dalam tombol
+                          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                         ),
                         child: Text(
-                          'Login',
+                          '  Login  ',
                           style: TextStyle(fontSize: 18),
                         ),
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          // Navigasi ke halaman Sign Up
                           Navigator.of(context).pushReplacementNamed('/signup');
                         },
                         style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: Colors.purple, // Warna teks putih dengan latar biru
+                          foregroundColor: Colors.purple,
+                          backgroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30), // Membuat sisi lebih membulat
+                            borderRadius: BorderRadius.circular(30),
+                            side: BorderSide(color: Colors.purple, width: 2),
                           ),
-                          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15), // Padding dalam tombol
+                          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                         ),
                         child: Text(
                           'Sign Up',
@@ -140,9 +140,9 @@ class _DashboardState extends State<Dashboard> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 400), // Tambahan konten untuk memungkinkan scroll
+                  SizedBox(height: 400),
                   Text(
-                    'Konten Tambahan untuk Scroll',
+                    'Copyright Mejakita.com@2021',
                     style: TextStyle(fontSize: 24),
                   ),
                 ],
@@ -189,6 +189,23 @@ class _DashboardState extends State<Dashboard> {
           ),
         ),
       ),
+  floatingActionButton: FloatingActionButton(
+  onPressed: () {
+    //Navigator.of(context).pushReplacementNamed('/perbaikan');
+  },
+  backgroundColor: Colors.transparent,
+  elevation: 0, 
+  child: ClipRRect(
+    borderRadius: BorderRadius.circular(16.0), 
+    child: Image.asset(
+      'images/wapics.png', 
+      fit: BoxFit.cover,
+      width: 56.0,
+      height: 56.0,
+    ),
+  ),
+),
+floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }
