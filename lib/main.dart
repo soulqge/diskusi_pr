@@ -18,7 +18,7 @@ void main() async {
       '/homepage': (context) => HomePage(),
       '/dashboard':(context) => Dashboard(),
       '/login':(context) => Login(),
-      '/signup':(context) => Singup(),
+      '/signup':(context) => Signup(),
       '/forgot':(context) => ForgotPage(),
       '/perbaikan':(context) => Perbaikan(),
       '/home':(context) => Home(),
