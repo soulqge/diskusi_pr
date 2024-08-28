@@ -66,6 +66,9 @@ flutter:
     - family: Lato
       fonts:
         - asset: fonts/Lato-Italic.ttf
+    # - family: Latos
+    #   fonts: 
+    #    - asset: fonts/Lato-BoldItalic.tft
 
   assets: 
     - images/logos.png
@@ -73,6 +76,7 @@ flutter:
     - images/DB2.png
     - images/wapics.png
     - images/kitten.png
+    - images/tole.jpg
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
