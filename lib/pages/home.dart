@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:diskusi_pr/pages/halaman.dart'; 
-import 'package:diskusi_pr/pages/pertanyaan.dart';
+import 'package:diskusi_pr/pages/diskusipr.dart';
 import 'package:diskusi_pr/pages/cart.dart';
 import 'package:diskusi_pr/pages/profile.dart';
 
@@ -17,7 +17,7 @@ class _HomeState extends State<Home> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
-    Container(), // Placeholder for the Home page content
+    Container(), 
     Cartpage(), 
     Profilepage(),
   ];
@@ -73,10 +73,10 @@ class _HomeState extends State<Home> {
                 ),
               ),
             )
-          : null, // No AppBar for Cart and Profile pages, as they have their own AppBars
+          : null, 
       body: _currentIndex == 0 
-          ? _buildHomeContent() // Show the Home content when Home is selected
-          : _pages[_currentIndex], // Show CartPage or ProfilePage
+          ? _buildHomeContent() 
+          : _pages[_currentIndex], 
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {
@@ -187,7 +187,7 @@ class _HomeState extends State<Home> {
                 children: <Widget>[
                   _buildMenuItem(Icons.book, 'UTBK', context, Perbaikan()),
                   _buildMenuItem(Icons.subscriptions, 'Langganan', context, Perbaikan()),
-                  _buildMenuItem(Icons.chat, 'Diskusi', context,Pertanyaan() ),
+                  _buildMenuItem(Icons.chat, 'Diskusi', context,HomePage() ),
                   _buildMenuItem(Icons.note, 'Catatan', context, Perbaikan()),
                   _buildMenuItem(Icons.library_books, 'Materi', context, Perbaikan()),
                   _buildMenuItem(Icons.calculate, 'Rumus', context, Perbaikan()),

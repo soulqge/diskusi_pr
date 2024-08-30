@@ -18,7 +18,6 @@ class _HomePageState extends State<HomePage> {
   final picker = ImagePicker();
   final tSoal = TextEditingController();
   String? selectedTag;
-  String? filterTag;
   late Box box;
 
   @override
@@ -56,7 +55,6 @@ class _HomePageState extends State<HomePage> {
       final savedData = {
         'imagePath': localImage.path,
         'text': soalText,
-        'tag': selectedTag,
         'answers': [],
       };
 
@@ -97,22 +95,6 @@ class _HomePageState extends State<HomePage> {
               _image == null
                   ? Text("Tidak Ada Foto Yang Dipilih")
                   : Image.file(_image!),
-              SizedBox(height: 20),
-              DropdownButton<String>(
-                hint: Text("Pilih Tag"),
-                value: selectedTag,
-                items: ['Pelajaran', 'Non-Pelajaran']
-                    .map((tag) => DropdownMenuItem(
-                          value: tag,
-                          child: Text(tag),
-                        ))
-                    .toList(),
-                onChanged: (value) {
-                  setState(() {
-                    selectedTag = value!;
-                  });
-                },
-              ),
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: pilihFoto,
@@ -155,40 +137,52 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Diskusi PR"),
-        backgroundColor: Colors.blue,
-        actions: [
-          DropdownButton<String>(
-            hint: Text("Filter"),
-            value: filterTag,
-            items: ['Semua', 'Pelajaran', 'Non-Pelajaran']
-                .map((tag) => DropdownMenuItem(
-                      value: tag == 'Semua' ? null : tag,
-                      child: Text(tag),
-                    ))
-                .toList(),
-            onChanged: (value) {
-              setState(() {
-                filterTag = value;
-              });
+  leading: IconButton(
+    icon: Icon(Icons.arrow_back),
+    onPressed: () {
+      Navigator.pop(context);
+    },
+  ),
+  title: Text("Diskusi PR"),
+  backgroundColor: Colors.white,
+  actions: [
+    Padding(
+      padding: const EdgeInsets.only(right: 20),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,  
+          children: [
+          IconButton(
+            icon: Icon(Icons.history, color: Colors.black),
+            onPressed: () {
+            Navigator.of(context).pushReplacementNamed('/history');
+
             },
           ),
+          SizedBox(width: 4),
+          IconButton(
+            icon: Icon(Icons.person, color: Colors.black),
+            onPressed: () {
+            Navigator.of(context).pushReplacementNamed('/pertanyaan');
+
+            },
+          ),
+          SizedBox(width: 16),
         ],
       ),
+    ),
+  ],
+),
       body: Padding(
         padding: EdgeInsets.all(10),
         child: ValueListenableBuilder(
           valueListenable: box.listenable(),
           builder: (context, Box box, _) {
-            final filteredItems = box.values.where((item) {
-              if (filterTag == null) return true;
-              return item['tag'] == filterTag;
-            }).toList();
+            final items = box.values.toList();
 
             return ListView.builder(
-              itemCount: filteredItems.length,
+              itemCount: items.length,
               itemBuilder: (context, index) {
-                final data = filteredItems[index] as Map;
+                final data = items[index] as Map;
                 return InkWell(
                   onTap: () => navigateToDetailPage(index),
                   child: Card(

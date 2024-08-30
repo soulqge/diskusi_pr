@@ -2,8 +2,10 @@ import 'package:diskusi_pr/pages/dashboard.dart';
 import 'package:diskusi_pr/pages/forgot.dart';
 import 'package:diskusi_pr/pages/diskusipr.dart';
 import 'package:diskusi_pr/pages/halaman.dart';
+import 'package:diskusi_pr/pages/history.dart';
 import 'package:diskusi_pr/pages/home.dart';
 import 'package:diskusi_pr/pages/login.dart';
+import 'package:diskusi_pr/pages/pertanyaan.dart';
 import 'package:diskusi_pr/pages/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -22,6 +24,9 @@ void main() async {
       '/forgot':(context) => ForgotPage(),
       '/perbaikan':(context) => Perbaikan(),
       '/home':(context) => Home(),
+      '/pertanyaan':(context) => Pertanyaan(),
+      'history':(contexy) => History()
+
       
 
 
