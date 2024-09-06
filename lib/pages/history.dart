@@ -21,6 +21,7 @@ class _HistoryState extends State<History> {
       title: Text(" History Diskusi PR"),
       backgroundColor: Colors.white10,
     ),
+    body:Center()
     );
   }
 }

@@ -57,7 +57,7 @@ class _HomePageState extends State<HomePage> {
       final savedData = {
         'imagePath': localImage.path,
         'text': soalText,
-        'tag': selectedTag, // Menyimpan tag
+        'tag': selectedTag,
         'answers': [],
       };
 
@@ -81,60 +81,73 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void resetInput() {
+    tSoal.clear();
+    _image = null;
+    selectedTag = '';
+  }
+
   void tanyaSoal() {
+    resetInput();
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Colors.white,
-        title: Text("Tanya Soal"),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: tSoal,
-                decoration: InputDecoration(hintText: 'Mau Tanya Apa?'),
-              ),
-              _image == null
-                  ? Text("Tidak Ada Foto Yang Dipilih")
-                  : Image.file(_image!),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: pilihFoto,
-                child: Text("Pilih Foto"),
-              ),
-              SizedBox(height: 10),
-              DropdownButton<String>(
-                value: selectedTag.isEmpty ? null : selectedTag,
-                hint: Text('Pilih Tag'),
-                onChanged: (newValue) {
-                  setState(() {
-                    selectedTag = newValue!;
-                  });
-                },
-                items: ['Pelajaran', 'Non-pelajaran', 'Peminatan']
-                    .map((tag) => DropdownMenuItem<String>(
-                          value: tag,
-                          child: Text(tag),
-                        ))
-                    .toList(),
-              ),
-            ],
+      builder: (context) => StatefulBuilder(
+        builder: (context, setStateDialog) => AlertDialog(
+          backgroundColor: Colors.white,
+          title: Text("Tanya Soal"),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: tSoal,
+                  decoration: InputDecoration(hintText: 'Mau Tanya Apa?'),
+                ),
+                _image == null
+                    ? Text("Tidak Ada Foto Yang Dipilih")
+                    : Image.file(_image!),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () async {
+                    pilihFoto();
+                    setStateDialog(() {});
+                  },
+                  child: Text("Pilih Foto"),
+                ),
+                SizedBox(height: 10),
+                DropdownButton<String>(
+                  value: selectedTag.isEmpty ? null : selectedTag,
+                  hint: Text('Pilih Tag'),
+                  onChanged: (newValue) {
+                    setState(() {
+                      selectedTag = newValue!;
+                    });
+                    setStateDialog(() {});
+                  },
+                  items: ['Pelajaran', 'Non-pelajaran', 'Peminatan']
+                      .map((tag) => DropdownMenuItem<String>(
+                            value: tag,
+                            child: Text(tag),
+                          ))
+                      .toList(),
+                ),
+              ],
+            ),
           ),
+          actions: [
+            MaterialButton(
+              onPressed: () {
+                Navigator.pop(context);
+                resetInput();
+              },
+              child: Text("Batal"),
+            ),
+            MaterialButton(
+              onPressed: simpanFoto,
+              child: Text("Tanya"),
+            ),
+          ],
         ),
-        actions: [
-          MaterialButton(
-            onPressed: () {
-              Navigator.pop(context);
-              tSoal.clear();
-            },
-            child: Text("Batal"),
-          ),
-          MaterialButton(
-            onPressed: simpanFoto,
-            child: Text("Tanya"),
-          ),
-        ],
       ),
     );
   }
@@ -364,16 +377,20 @@ class _HomePageState extends State<HomePage> {
                                               ),
                                         SizedBox(width: 10),
                                         Expanded(
-                                          child: Column(
+                                          child: Row(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Text(
-                                                data['text'] ??
-                                                    'No Text Available',
-                                                style: TextStyle(fontSize: 18),
-                                                softWrap: true,
-                                                overflow: TextOverflow.visible,
+                                              Expanded(
+                                                child: Text(
+                                                  data['text'] ??
+                                                      'No Text Available',
+                                                  style:
+                                                      TextStyle(fontSize: 14),
+                                                  softWrap: true,
+                                                  overflow:
+                                                      TextOverflow.visible,
+                                                ),
                                               ),
                                             ],
                                           ),
@@ -393,11 +410,11 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                       ],
                                     ),
-                                    SizedBox(height: 6,
+                                    SizedBox(
+                                      height: 6,
                                     ),
                                     Row(
                                       children: [
-                                        // Make the TextButton take up all available space using Expanded
                                         Expanded(
                                           child: TextButton(
                                             onPressed: () =>
@@ -413,12 +430,13 @@ class _HomePageState extends State<HomePage> {
                                               child: Text(
                                                 'Tuliskan Jawabanmu Disini',
                                                 style: TextStyle(
-                                                    color: Colors.black54,fontSize: 12),
+                                                    color: Colors.black54,
+                                                    fontSize: 12),
                                               ),
                                             ),
                                           ),
                                         ),
-                                        SizedBox(width:6), 
+                                        SizedBox(width: 6),
                                         IconButton(
                                           icon: Icon(Icons.send,
                                               color: Colors.grey),
