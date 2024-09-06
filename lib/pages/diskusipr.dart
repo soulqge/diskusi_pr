@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
@@ -18,8 +19,8 @@ class _HomePageState extends State<HomePage> {
   final picker = ImagePicker();
   final tSoal = TextEditingController();
   late Box box;
-  String selectedTag = ''; 
-  String filterTag = ''; 
+  String selectedTag = '';
+  String filterTag = '';
 
   @override
   void initState() {
@@ -139,10 +140,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   void applyFilter(String tag) {
-  setState(() {
-    filterTag = tag == 'Semua' ? '' : tag; 
-  });
-}
+    setState(() {
+      filterTag = tag == 'Semua' ? '' : tag;
+    });
+  }
 
   void navigateToDetailPage(int index) async {
     final questionData = box.getAt(index) as Map;
@@ -155,7 +156,6 @@ class _HomePageState extends State<HomePage> {
     );
     setState(() {});
   }
-  
 
   @override
   Widget build(BuildContext context) {
@@ -257,37 +257,49 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ],
-                  ), 
-  SingleChildScrollView(
-  scrollDirection: Axis.horizontal,
-  child: Row(
-    children: [
-      SizedBox(width: 10), // Spasi kiri
-      ElevatedButton(
-        onPressed: () => applyFilter('Semua'),
-        child: Text('Semua'),
-      ),
-      SizedBox(width: 10),
-      ElevatedButton(
-        onPressed: () => applyFilter('Pelajaran'),
-        child: Text('Pelajaran'),
-      ),
-      SizedBox(width: 10),
-      ElevatedButton(
-        onPressed: () => applyFilter('Non-pelajaran'),
-        child: Text('Non-pelajaran'),
-      ),
-      SizedBox(width: 10),
-      ElevatedButton(
-        onPressed: () => applyFilter('Peminatan'),
-        child: Text('Peminatan'),
-      ),
-      SizedBox(width: 10), // Spasi kanan
-    ],
-  ),
-),
-
-                  
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Align(
+                    alignment: Alignment.centerLeft, // Align text to the left
+                    child: Text(
+                      'Filter berdasarkan:',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight:
+                            FontWeight.bold, // Make it bold for emphasis
+                      ),
+                    ),
+                  ),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        SizedBox(width: 10),
+                        ElevatedButton(
+                          onPressed: () => applyFilter('Semua'),
+                          child: Text('Semua'),
+                        ),
+                        SizedBox(width: 10),
+                        ElevatedButton(
+                          onPressed: () => applyFilter('Pelajaran'),
+                          child: Text('Pelajaran'),
+                        ),
+                        SizedBox(width: 10),
+                        ElevatedButton(
+                          onPressed: () => applyFilter('Non-pelajaran'),
+                          child: Text('Non-pelajaran'),
+                        ),
+                        SizedBox(width: 10),
+                        ElevatedButton(
+                          onPressed: () => applyFilter('Peminatan'),
+                          child: Text('Peminatan'),
+                        ),
+                        SizedBox(width: 10), // Spasi kanan
+                      ],
+                    ),
+                  ),
                   SizedBox(height: 10),
                   ValueListenableBuilder(
                     valueListenable: box.listenable(),
@@ -312,28 +324,109 @@ class _HomePageState extends State<HomePage> {
                               child: Padding(
                                 padding: EdgeInsets.all(10),
                                 child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    data['imagePath'] != null
-                                        ? Image.file(
-                                            File(data['imagePath']),
-                                            height: 150,
-                                            fit: BoxFit.cover,
-                                          )
-                                        : Container(
-                                            height: 150,
-                                            color: Colors.grey[300],
-                                            child: Center(
-                                                child: Text(
-                                                    'No Image Available')),
-                                          ),
-                                    SizedBox(height: 10),
-                                    Text(
-                                      data['text'] ?? 'No Text Available',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                      ),
+                                    Row(
+                                      children: [
+                                        Image.asset(
+                                          'images/tole.jpg',
+                                          height: 40,
+                                          width: 40,
+                                          fit: BoxFit.cover,
+                                        ),
+                                        SizedBox(
+                                          width: 6,
+                                        ),
+                                        Text("User1"),
+                                      ],
                                     ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        data['imagePath'] != null
+                                            ? Image.file(
+                                                File(data['imagePath']),
+                                                height: 150,
+                                                width: 110,
+                                                fit: BoxFit.cover,
+                                              )
+                                            : Container(
+                                                height: 150,
+                                                width: 110,
+                                                color: Colors.grey[300],
+                                                child: Center(
+                                                    child: Text(
+                                                        'No Image Available')),
+                                              ),
+                                        SizedBox(width: 10),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                data['text'] ??
+                                                    'No Text Available',
+                                                style: TextStyle(fontSize: 18),
+                                                softWrap: true,
+                                                overflow: TextOverflow.visible,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 6,
+                                    ),
+                                    Row(
+                                      children: [
+                                        IconButton(
+                                          icon: Icon(Icons.chat_bubble,
+                                              color: Colors.grey),
+                                          onPressed: () =>
+                                              navigateToDetailPage(index),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 6,
+                                    ),
+                                    Row(
+                                      children: [
+                                        // Make the TextButton take up all available space using Expanded
+                                        Expanded(
+                                          child: TextButton(
+                                            onPressed: () =>
+                                                navigateToDetailPage(index),
+                                            child: Container(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 10, horizontal: 50),
+                                              decoration: BoxDecoration(
+                                                color: Colors.grey[200],
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                              ),
+                                              child: Text(
+                                                'Tuliskan Jawabanmu Disini',
+                                                style: TextStyle(
+                                                    color: Colors.black54,fontSize: 12),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(width:6), 
+                                        IconButton(
+                                          icon: Icon(Icons.send,
+                                              color: Colors.grey),
+                                          onPressed: () =>
+                                              navigateToDetailPage(index),
+                                        ),
+                                      ],
+                                    )
                                   ],
                                 ),
                               ),
