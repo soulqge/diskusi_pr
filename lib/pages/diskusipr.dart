@@ -17,8 +17,9 @@ class _HomePageState extends State<HomePage> {
   File? _image;
   final picker = ImagePicker();
   final tSoal = TextEditingController();
-  String? selectedTag;
   late Box box;
+  String selectedTag = ''; 
+  String filterTag = ''; 
 
   @override
   void initState() {
@@ -39,7 +40,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void simpanFoto() async {
-    if (_image == null || tSoal.text.isEmpty || selectedTag == null) {
+    if (_image == null || tSoal.text.isEmpty || selectedTag.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Foto, teks, dan tag harus diisi!')),
       );
@@ -55,6 +56,7 @@ class _HomePageState extends State<HomePage> {
       final savedData = {
         'imagePath': localImage.path,
         'text': soalText,
+        'tag': selectedTag, // Menyimpan tag
         'answers': [],
       };
 
@@ -62,7 +64,7 @@ class _HomePageState extends State<HomePage> {
         box.add(savedData);
         _image = null;
         tSoal.clear();
-        selectedTag = null;
+        selectedTag = '';
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -100,6 +102,22 @@ class _HomePageState extends State<HomePage> {
                 onPressed: pilihFoto,
                 child: Text("Pilih Foto"),
               ),
+              SizedBox(height: 10),
+              DropdownButton<String>(
+                value: selectedTag.isEmpty ? null : selectedTag,
+                hint: Text('Pilih Tag'),
+                onChanged: (newValue) {
+                  setState(() {
+                    selectedTag = newValue!;
+                  });
+                },
+                items: ['Pelajaran', 'Non-pelajaran', 'Peminatan']
+                    .map((tag) => DropdownMenuItem<String>(
+                          value: tag,
+                          child: Text(tag),
+                        ))
+                    .toList(),
+              ),
             ],
           ),
         ),
@@ -108,7 +126,6 @@ class _HomePageState extends State<HomePage> {
             onPressed: () {
               Navigator.pop(context);
               tSoal.clear();
-              selectedTag = null;
             },
             child: Text("Batal"),
           ),
@@ -121,6 +138,12 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void applyFilter(String tag) {
+  setState(() {
+    filterTag = tag == 'Semua' ? '' : tag; 
+  });
+}
+
   void navigateToDetailPage(int index) async {
     final questionData = box.getAt(index) as Map;
     await Navigator.push(
@@ -132,96 +155,199 @@ class _HomePageState extends State<HomePage> {
     );
     setState(() {});
   }
+  
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-  leading: IconButton(
-    icon: Icon(Icons.arrow_back),
-    onPressed: () {
-      Navigator.pop(context);
-    },
-  ),
-  title: Text("Diskusi PR"),
-  backgroundColor: Colors.white,
-  actions: [
-    Padding(
-      padding: const EdgeInsets.only(right: 20),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,  
-          children: [
-          IconButton(
-            icon: Icon(Icons.history, color: Colors.black),
-            onPressed: () {
-            Navigator.of(context).pushReplacementNamed('/history');
-
-            },
-          ),
-          SizedBox(width: 4),
-          IconButton(
-            icon: Icon(Icons.person, color: Colors.black),
-            onPressed: () {
-            Navigator.of(context).pushReplacementNamed('/pertanyaan');
-
-            },
-          ),
-          SizedBox(width: 16),
-        ],
-      ),
-    ),
-  ],
-),
-      body: Padding(
-        padding: EdgeInsets.all(10),
-        child: ValueListenableBuilder(
-          valueListenable: box.listenable(),
-          builder: (context, Box box, _) {
-            final items = box.values.toList();
-
-            return ListView.builder(
-              itemCount: items.length,
-              itemBuilder: (context, index) {
-                final data = items[index] as Map;
-                return InkWell(
-                  onTap: () => navigateToDetailPage(index),
-                  child: Card(
-                    child: Padding(
-                      padding: EdgeInsets.all(10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          data['imagePath'] != null
-                              ? Image.file(
-                                  File(data['imagePath']),
-                                  height: 150,
-                                  fit: BoxFit.cover,
-                                )
-                              : Container(
-                                  height: 150,
-                                  color: Colors.grey[300],
-                                  child: Center(child: Text('No Image Available')),
-                                ),
-                          SizedBox(height: 10),
-                          Text(
-                            data['text'] ?? 'No Text Available',
-                            style: TextStyle(
-                              fontSize: 18,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              },
-            );
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
           },
         ),
+        title: Text("Diskusi PR"),
+        backgroundColor: Colors.white,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.history, color: Colors.black),
+                  onPressed: () {
+                    Navigator.of(context).pushReplacementNamed('/history');
+                  },
+                ),
+                SizedBox(width: 4),
+                IconButton(
+                  icon: Icon(Icons.person, color: Colors.black),
+                  onPressed: () {
+                    Navigator.of(context).pushReplacementNamed('/pertanyaan');
+                  },
+                ),
+                SizedBox(width: 16),
+              ],
+            ),
+          ),
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: tanyaSoal,
-        child: Icon(Icons.add),
+      body: Padding(
+        padding: EdgeInsets.all(10),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Column(
+                children: [
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        backgroundImage: AssetImage('images/tole.jpg'),
+                        radius: 24,
+                      ),
+                      SizedBox(width: 5),
+                      Expanded(
+                        child: TextButton(
+                          onPressed: () {
+                            tanyaSoal();
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 50),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[200],
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              'Soal apa yang ingin kamu tanyain?',
+                              style: TextStyle(color: Colors.black54),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 60),
+                        child: IconButton(
+                          icon: Icon(Icons.photo_camera, color: Colors.grey),
+                          onPressed: () {
+                            tanyaSoal();
+                          },
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 20),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            tanyaSoal();
+                          },
+                          child: Text('Upload'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green,
+                            padding: EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 20),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ), 
+  SingleChildScrollView(
+  scrollDirection: Axis.horizontal,
+  child: Row(
+    children: [
+      SizedBox(width: 10), // Spasi kiri
+      ElevatedButton(
+        onPressed: () => applyFilter('Semua'),
+        child: Text('Semua'),
+      ),
+      SizedBox(width: 10),
+      ElevatedButton(
+        onPressed: () => applyFilter('Pelajaran'),
+        child: Text('Pelajaran'),
+      ),
+      SizedBox(width: 10),
+      ElevatedButton(
+        onPressed: () => applyFilter('Non-pelajaran'),
+        child: Text('Non-pelajaran'),
+      ),
+      SizedBox(width: 10),
+      ElevatedButton(
+        onPressed: () => applyFilter('Peminatan'),
+        child: Text('Peminatan'),
+      ),
+      SizedBox(width: 10), // Spasi kanan
+    ],
+  ),
+),
+
+                  
+                  SizedBox(height: 10),
+                  ValueListenableBuilder(
+                    valueListenable: box.listenable(),
+                    builder: (context, Box box, _) {
+                      final items = box.values.toList();
+                      final filteredItems = filterTag.isEmpty
+                          ? items
+                          : items.where((item) {
+                              final data = item as Map;
+                              return data['tag'] == filterTag;
+                            }).toList();
+
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: filteredItems.length,
+                        itemBuilder: (context, index) {
+                          final data = filteredItems[index] as Map;
+                          return InkWell(
+                            onTap: () => navigateToDetailPage(index),
+                            child: Card(
+                              child: Padding(
+                                padding: EdgeInsets.all(10),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    data['imagePath'] != null
+                                        ? Image.file(
+                                            File(data['imagePath']),
+                                            height: 150,
+                                            fit: BoxFit.cover,
+                                          )
+                                        : Container(
+                                            height: 150,
+                                            color: Colors.grey[300],
+                                            child: Center(
+                                                child: Text(
+                                                    'No Image Available')),
+                                          ),
+                                    SizedBox(height: 10),
+                                    Text(
+                                      data['text'] ?? 'No Text Available',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

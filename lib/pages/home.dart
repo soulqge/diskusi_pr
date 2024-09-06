@@ -101,8 +101,6 @@ class _HomeState extends State<Home> {
       ),
     );
   }
-
-  // Build the content of the Home page
   Widget _buildHomeContent() {
     return Stack(
       children: [
@@ -224,7 +222,7 @@ class _HomeState extends State<Home> {
           ),
         Positioned(
           right: 16.0,
-          bottom: 60.0, // Adjust this value to move the FAB upwards
+          bottom: 60.0, 
           child: FloatingActionButton(
             onPressed: () {
               //Navigator.of(context).pushReplacementNamed('/perbaikan');

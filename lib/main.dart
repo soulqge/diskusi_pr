@@ -15,7 +15,7 @@ void main() async {
   await Hive.initFlutter();
   await Hive.openBox('savedDataBox');
   runApp(MaterialApp(
-    initialRoute: '/dashboard',
+    initialRoute: '/homepage',
     routes: {
       '/homepage': (context) => HomePage(),
       '/dashboard':(context) => Dashboard(),
@@ -25,12 +25,7 @@ void main() async {
       '/perbaikan':(context) => Perbaikan(),
       '/home':(context) => Home(),
       '/pertanyaan':(context) => Pertanyaan(),
-      'history':(contexy) => History()
-
-      
-
-
-
+      '/history':(context) => History(),
     },
   ));
 }
