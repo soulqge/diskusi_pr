@@ -21,6 +21,7 @@ class _HomePageState extends State<HomePage> {
   late Box box;
   String selectedTag = '';
   String filterTag = '';
+  String activeFilter = 'Semua'; 
 
   @override
   void initState() {
@@ -155,6 +156,7 @@ class _HomePageState extends State<HomePage> {
   void applyFilter(String tag) {
     setState(() {
       filterTag = tag == 'Semua' ? '' : tag;
+      activeFilter = tag; 
     });
   }
 
@@ -168,6 +170,20 @@ class _HomePageState extends State<HomePage> {
       ),
     );
     setState(() {});
+  }
+
+  ElevatedButton buildFilterButton(String tag) {
+    bool isActive = activeFilter == tag; 
+    return ElevatedButton(
+      onPressed: () {
+        applyFilter(tag);
+      },
+      style: ElevatedButton.styleFrom(
+        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+        backgroundColor: isActive ? Colors.grey : Colors.blue, 
+      ),
+      child: Text(tag, style: TextStyle(color: Colors.white)),
+    );
   }
 
   @override
@@ -218,7 +234,7 @@ class _HomePageState extends State<HomePage> {
                   Row(
                     children: [
                       CircleAvatar(
-                        backgroundImage: AssetImage('images/tole.jpg'),
+                        backgroundImage: AssetImage('images/tole.png'),
                         radius: 24,
                       ),
                       SizedBox(width: 5),
@@ -275,13 +291,12 @@ class _HomePageState extends State<HomePage> {
                     height: 20,
                   ),
                   Align(
-                    alignment: Alignment.centerLeft, // Align text to the left
+                    alignment: Alignment.centerLeft,
                     child: Text(
                       'Filter berdasarkan:',
                       style: TextStyle(
                         fontSize: 14,
-                        fontWeight:
-                            FontWeight.bold, // Make it bold for emphasis
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
@@ -290,25 +305,13 @@ class _HomePageState extends State<HomePage> {
                     child: Row(
                       children: [
                         SizedBox(width: 10),
-                        ElevatedButton(
-                          onPressed: () => applyFilter('Semua'),
-                          child: Text('Semua'),
-                        ),
+                        buildFilterButton('Semua'),
                         SizedBox(width: 10),
-                        ElevatedButton(
-                          onPressed: () => applyFilter('Pelajaran'),
-                          child: Text('Pelajaran'),
-                        ),
+                        buildFilterButton('Pelajaran'),
                         SizedBox(width: 10),
-                        ElevatedButton(
-                          onPressed: () => applyFilter('Non-pelajaran'),
-                          child: Text('Non-pelajaran'),
-                        ),
+                        buildFilterButton('Non-pelajaran'),
                         SizedBox(width: 10),
-                        ElevatedButton(
-                          onPressed: () => applyFilter('Peminatan'),
-                          child: Text('Peminatan'),
-                        ),
+                        buildFilterButton('Peminatan'),
                         SizedBox(width: 10), // Spasi kanan
                       ],
                     ),
@@ -342,7 +345,7 @@ class _HomePageState extends State<HomePage> {
                                     Row(
                                       children: [
                                         Image.asset(
-                                          'images/tole.jpg',
+                                          'images/tole.png',
                                           height: 40,
                                           width: 40,
                                           fit: BoxFit.cover,

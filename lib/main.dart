@@ -15,7 +15,18 @@ void main() async {
   await Hive.initFlutter();
   await Hive.openBox('savedDataBox');
   runApp(MaterialApp(
-    initialRoute: '/homepage',
+    theme: ThemeData(
+        useMaterial3: true, 
+        colorSchemeSeed: Colors.blue,
+        brightness: Brightness.light, 
+      ),
+      darkTheme: ThemeData(
+        useMaterial3: true, 
+        colorSchemeSeed: Colors.blue, 
+        brightness: Brightness.dark, 
+      ),
+      themeMode: ThemeMode.light, 
+    initialRoute: '/dashboard',
     routes: {
       '/homepage': (context) => HomePage(),
       '/dashboard':(context) => Dashboard(),

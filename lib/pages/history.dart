@@ -13,7 +13,7 @@ class _HistoryState extends State<History> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-    icon: Icon(Icons.arrow_back),
+    icon: Icon(Icons.chevron_left),
     onPressed: () {
         Navigator.of(context).pushReplacementNamed('/homepage');
       },

@@ -27,7 +27,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: _currentIndex == 0
           ? AppBar(
-              leading: Image.asset('images/tole.jpg'),
+              leading: Image.asset('images/tole.png'),
               title: Padding(
                 padding: const EdgeInsets.only(left: 8.0),
                 child: Row(

@@ -57,7 +57,13 @@ class _DetailPageState extends State<DetailPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Halaman Soal'),
+         leading: IconButton(
+    icon: Icon(Icons.chevron_left),
+    onPressed: () {
+        Navigator.of(context).pushReplacementNamed('/homepage');
+      },
+      ),
+        title: Text('Diskusi PR'),
         backgroundColor: Colors.blue,
       ),
       body: Padding(
@@ -65,11 +71,36 @@ class _DetailPageState extends State<DetailPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            Row(
+              children: [
+                Image.asset(
+                  'images/tole.png',
+                  height: 40,
+                  width: 40,
+                  fit: BoxFit.cover,
+                ),
+                SizedBox(
+                  width: 6,
+                ),
+                Text("User1"),
+              ],
+            ),
+            SizedBox(
+              height: 10,
+            ),
             Image.file(File(widget.questionData['imagePath']),
                 height: 200, fit: BoxFit.cover),
             SizedBox(height: 20),
             Text(widget.questionData['text'], style: TextStyle(fontSize: 18)),
             SizedBox(height: 20),
+            Row(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.chat_bubble, color: Colors.grey),
+                  onPressed: () => {},
+                ),
+              ],
+            ),
             Expanded(
               child: answers.isEmpty
                   ? Center(child: Text('Belum ada jawaban.'))
@@ -94,7 +125,12 @@ class _DetailPageState extends State<DetailPage> {
                         InputDecoration(hintText: 'Ketik Jawaban Kamu...'),
                   ),
                 ),
-                SizedBox(width: 20),
+                SizedBox(width: 10),
+                IconButton(
+                  icon: Icon(Icons.camera, color: Colors.grey),
+                  onPressed: () {},
+                ),
+                SizedBox(width: 10),
                 ElevatedButton(
                   onPressed: simpanJawab,
                   child: Text('Jawab'),
