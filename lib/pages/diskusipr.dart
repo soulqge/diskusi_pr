@@ -191,7 +191,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.chevron_left),
           onPressed: () {
             Navigator.pop(context);
           },
