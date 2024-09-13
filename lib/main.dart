@@ -22,7 +22,7 @@ void main() async {
       ),
       darkTheme: ThemeData(
         useMaterial3: true, 
-        colorSchemeSeed: Colors.blue, 
+        colorSchemeSeed: Colors.blue,  
         brightness: Brightness.dark, 
       ),
       themeMode: ThemeMode.light, 

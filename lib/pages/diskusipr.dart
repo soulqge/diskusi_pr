@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
@@ -21,7 +20,7 @@ class _HomePageState extends State<HomePage> {
   late Box box;
   String selectedTag = '';
   String filterTag = '';
-  String activeFilter = 'Semua'; 
+  String activeFilter = 'Semua';
 
   @override
   void initState() {
@@ -42,24 +41,30 @@ class _HomePageState extends State<HomePage> {
   }
 
   void simpanFoto() async {
-    if (_image == null || tSoal.text.isEmpty || selectedTag.isEmpty) {
+    if (tSoal.text.isEmpty || selectedTag.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Foto, teks, dan tag harus diisi!')),
+        SnackBar(content: Text('Teks dan tag harus diisi!')),
       );
       return;
     }
 
     try {
-      final directory = await getApplicationDocumentsDirectory();
-      final fileNama = path.basename(_image!.path);
-      final localImage = await _image!.copy('${directory.path}/$fileNama');
+      String? localImagePath;
+
+      if (_image != null) {
+        final directory = await getApplicationDocumentsDirectory();
+        final fileNama = path.basename(_image!.path);
+        final localImage = await _image!.copy('${directory.path}/$fileNama');
+        localImagePath = localImage.path;
+      }
 
       final soalText = tSoal.text;
       final savedData = {
-        'imagePath': localImage.path,
+        'imagePath': localImagePath,
         'text': soalText,
         'tag': selectedTag,
         'answers': [],
+        'tanggal': DateTime.now().toString(),  // Simpan waktu saat soal dibuat
       };
 
       setState(() {
@@ -70,14 +75,14 @@ class _HomePageState extends State<HomePage> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Foto dan teks berhasil disimpan!')),
+        SnackBar(content: Text('Teks berhasil disimpan!')),
       );
 
       Navigator.pop(context);
     } catch (e) {
-      print('Gagal menyimpan foto dan teks: $e');
+      print('Gagal menyimpan teks: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Gagal menyimpan foto dan teks!')),
+        SnackBar(content: Text('Gagal menyimpan teks!')),
       );
     }
   }
@@ -156,7 +161,7 @@ class _HomePageState extends State<HomePage> {
   void applyFilter(String tag) {
     setState(() {
       filterTag = tag == 'Semua' ? '' : tag;
-      activeFilter = tag; 
+      activeFilter = tag;
     });
   }
 
@@ -173,14 +178,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   ElevatedButton buildFilterButton(String tag) {
-    bool isActive = activeFilter == tag; 
+    bool isActive = activeFilter == tag;
     return ElevatedButton(
       onPressed: () {
         applyFilter(tag);
       },
       style: ElevatedButton.styleFrom(
         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-        backgroundColor: isActive ? Colors.grey : Colors.blue, 
+        backgroundColor: isActive ? Colors.grey : Colors.blue,
       ),
       child: Text(tag, style: TextStyle(color: Colors.white)),
     );
@@ -312,7 +317,7 @@ class _HomePageState extends State<HomePage> {
                         buildFilterButton('Non-pelajaran'),
                         SizedBox(width: 10),
                         buildFilterButton('Peminatan'),
-                        SizedBox(width: 10), // Spasi kanan
+                        SizedBox(width: 10),
                       ],
                     ),
                   ),
@@ -332,10 +337,13 @@ class _HomePageState extends State<HomePage> {
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
                         itemCount: filteredItems.length,
-                        itemBuilder: (context, index) {
-                          final data = filteredItems[index] as Map;
+                        itemBuilder: (context, filteredIndex) {  
+                          final data = filteredItems[filteredIndex] as Map;
+                          final originalIndex = items.indexOf(data); // Mendefinisikan originalIndex di sini
                           return InkWell(
-                            onTap: () => navigateToDetailPage(index),
+                            onTap: () {
+                              navigateToDetailPage(originalIndex);  // Navigasi dengan indeks asli
+                            },
                             child: Card(
                               child: Padding(
                                 padding: EdgeInsets.all(10),
@@ -380,74 +388,38 @@ class _HomePageState extends State<HomePage> {
                                               ),
                                         SizedBox(width: 10),
                                         Expanded(
-                                          child: Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Expanded(
-                                                child: Text(
-                                                  data['text'] ??
-                                                      'No Text Available',
-                                                  style:
-                                                      TextStyle(fontSize: 14),
-                                                  softWrap: true,
-                                                  overflow:
-                                                      TextOverflow.visible,
-                                                ),
-                                              ),
-                                            ],
+                                          child: Text(
+                                            data['text'] ?? 'No Text Available',
+                                            style: TextStyle(fontSize: 14),
+                                            softWrap: true,
+                                            overflow: TextOverflow.visible,
                                           ),
                                         ),
                                       ],
                                     ),
-                                    SizedBox(
-                                      height: 6,
-                                    ),
+                                    SizedBox(height: 6),
                                     Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         IconButton(
                                           icon: Icon(Icons.chat_bubble,
                                               color: Colors.grey),
                                           onPressed: () =>
-                                              navigateToDetailPage(index),
+                                              navigateToDetailPage(
+                                                  originalIndex),
                                         ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 6,
-                                    ),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: TextButton(
-                                            onPressed: () =>
-                                                navigateToDetailPage(index),
-                                            child: Container(
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 10, horizontal: 50),
-                                              decoration: BoxDecoration(
-                                                color: Colors.grey[200],
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                              ),
-                                              child: Text(
-                                                'Tuliskan Jawabanmu Disini',
-                                                style: TextStyle(
-                                                    color: Colors.black54,
-                                                    fontSize: 12),
-                                              ),
-                                            ),
+                                        Text(
+                                          data['tanggal'] != null
+                                              ? '(${DateTime.parse(data['tanggal']).toLocal().toString().split(' ')[0]})'
+                                              : '',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.grey,
                                           ),
                                         ),
-                                        SizedBox(width: 6),
-                                        IconButton(
-                                          icon: Icon(Icons.send,
-                                              color: Colors.grey),
-                                          onPressed: () =>
-                                              navigateToDetailPage(index),
-                                        ),
                                       ],
-                                    )
+                                    ),
                                   ],
                                 ),
                               ),
