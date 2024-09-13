@@ -27,7 +27,44 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
-  
+  // Function to confirm delete
+  void confirmDelete(int index) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Konfirmasi Hapus'),
+        content: Text('Apakah Anda yakin ingin menghapus item ini?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text('Batal'),
+          ),
+          TextButton(
+            onPressed: () {
+              hapusSoal(index);  // Perform delete
+              Navigator.pop(context);
+            },
+            child: Text('Hapus'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Function to delete the question/answer
+  void hapusSoal(int index) {
+    setState(() {
+      box.deleteAt(index); // Delete from Hive
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Item berhasil dihapus')),
+    );
+  }
+
+  // Function to build the question list with delete buttons
   Widget buildSoalList() {
     if (box.isEmpty) {
       return Center(
@@ -44,14 +81,29 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
           margin: EdgeInsets.all(10),
           child: ListTile(
             title: Text(soalData['text'] ?? 'No Text Available'),
-            subtitle: soalData['imagePath'] != null
-                ? Image.file(
-                    File(soalData['imagePath']),
-                    height: 150,
-                    width: 110,
-                    fit: BoxFit.cover,
-                  )
-                : Text('No Image Available'),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                soalData['imagePath'] != null
+                    ? Image.file(
+                        File(soalData['imagePath']),
+                        height: 150,
+                        width: 110,
+                        fit: BoxFit.cover,
+                      )
+                    : Text('No Image Available'),
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () => confirmDelete(index),
+                      child: Text('Hapus'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
             onTap: () {
               Navigator.push(
                 context,
@@ -69,7 +121,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
     );
   }
 
-  
+  // Function to build the answered question list with delete buttons
   Widget buildAnsweredSoalList() {
     final List<Map> answeredSoals = [];
 
@@ -95,9 +147,23 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
           margin: EdgeInsets.all(10),
           child: ListTile(
             title: Text(soalData['text'] ?? 'No Text Available'),
-            subtitle: Text('Jumlah Jawaban: ${(soalData['answers'] as List).length}'),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Jumlah Jawaban: ${(soalData['answers'] as List).length}'),
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () => confirmDelete(box.values.toList().indexOf(soalData)),
+                      child: Text('Hapus'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
             onTap: () {
-
               Navigator.push(
                 context,
                 MaterialPageRoute(
